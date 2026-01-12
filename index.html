@@ -3,111 +3,199 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>法语动词变位 Flashcards（A1 挖空）</title>
+  <title>FR Verbs Anki（A1 挖空）</title>
   <style>
+    :root{
+      --bg:#0b0c10;
+      --panel:#111319;
+      --card:#151824;
+      --text:#e8eaf0;
+      --muted:#a8adbd;
+      --line:rgba(255,255,255,.10);
+      --good:#2bd576;
+      --bad:#ff4d4f;
+      --accent:#7aa2ff;
+    }
+    *{box-sizing:border-box}
     body{
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
-      margin: 20px;
-      color:#111;
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "PingFang SC","Noto Sans CJK SC","Microsoft YaHei", sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(122,162,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 90% 20%, rgba(43,213,118,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
       line-height:1.45;
     }
-    .wrap{max-width: 980px; margin: 0 auto;}
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px 16px 28px;
+    }
     .top{
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-      margin-bottom: 14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px 14px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      backdrop-filter: blur(10px);
     }
-    button, input, select{
-      padding:10px 12px;
-      font-size:14px;
-      border:1px solid #d9d9d9;
-      border-radius:10px;
-      background:#fff;
-    }
-    button{cursor:pointer;}
-    button:active{transform: translateY(1px);}
+    .left, .right{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
     .pill{
-      display:inline-block;
-      padding:4px 10px;
-      border-radius:999px;
-      background:#f2f2f2;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius: 999px;
+      color:var(--muted);
       font-size:12px;
-      border:1px solid #e6e6e6;
+      background: rgba(255,255,255,.02);
+      white-space:nowrap;
     }
+    input, select, button{
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+    input::placeholder{color: rgba(232,234,240,.45);}
+    button{cursor:pointer}
+    button:active{transform: translateY(1px);}
+    .primary{
+      background: rgba(122,162,255,.16);
+      border-color: rgba(122,162,255,.35);
+    }
+    .good{background: rgba(43,213,118,.14); border-color: rgba(43,213,118,.35);}
+    .again{background: rgba(255,77,79,.12); border-color: rgba(255,77,79,.35);}
     .card{
-      border:1px solid #ddd;
-      border-radius:16px;
-      padding:18px;
-      min-height: 260px;
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow: 0 30px 90px rgba(0,0,0,.55);
+      padding: 18px;
     }
-    .row{display:flex; gap:16px; flex-wrap:wrap;}
-    .col{flex: 1 1 420px;}
-    .big{font-size:22px; font-weight:650; margin:0 0 6px;}
-    .muted{color:#666; font-size:13px;}
-    table{border-collapse:collapse; width:100%; margin-top:10px;}
-    td,th{border:1px solid #e8e8e8; padding:8px 10px; font-size:14px;}
-    th{background:#fafafa; text-align:left;}
-    .qa{
-      margin-top:12px;
-      border-top:1px solid #eee;
-      padding-top:12px;
+    .frontTitle{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
     }
-    .qline{font-size:16px; margin:6px 0;}
-    .qline b{font-weight:700;}
-    .qctrl{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px;}
-    .feedback{font-size:13px;}
-    .ok{color:#0a7a2f;}
-    .bad{color:#b00020;}
-    .footer{
-      margin-top: 12px;
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    .verb{
+      font-size: 20px;
+      font-weight: 680;
+      margin:0;
     }
-    .hint{color:#666; font-size:13px;}
-    details{margin-top:14px;}
-    code{background:#f6f6f6; padding:2px 6px; border-radius:6px;}
+    .sub{
+      color:var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .q{
+      margin-top: 14px;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .blank{
+      display:inline-block;
+      min-width: 88px;
+      padding: 2px 8px;
+      border-bottom: 2px solid rgba(232,234,240,.35);
+      color: transparent; /* 前面隐藏答案占位感 */
+      user-select:none;
+    }
+    .answerRow{
+      margin-top: 14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .answerRow input{flex:1 1 320px;}
+    .msg{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 18px;
+    }
+    .msg.ok{color: var(--good);}
+    .msg.bad{color: var(--bad);}
+
+    .back{
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .back b{color: var(--text);}
+    .miniTable{
+      margin-top: 10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
+      padding: 12px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(0,0,0,.22);
+    }
+    .kv{display:flex; gap:10px; align-items:baseline;}
+    .k{color: rgba(232,234,240,.55); width: 92px;}
+    .v{color: var(--text); font-weight: 620;}
+    .actions{
+      margin-top: 14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .actions .leftBtn{display:flex; gap:10px; flex-wrap:wrap;}
+    .hint{
+      color: rgba(232,234,240,.55);
+      font-size: 13px;
+    }
+    .small{
+      font-size: 12px;
+      color: rgba(232,234,240,.48);
+    }
+    a{color: var(--accent);}
   </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <button id="prevBtn">上一张</button>
-    <button id="flipBtn">翻面</button>
-    <button id="nextBtn">下一张</button>
-
-    <span class="pill" id="modePill">模式：顺序</span>
-    <button id="shuffleBtn">随机</button>
-
-    <button id="knowBtn">我会了</button>
-    <button id="againBtn">再来一次</button>
-
-    <span class="pill" id="statsPill"></span>
-
-    <input id="searchBox" placeholder="搜索：aimer / 喜欢 / prends ..." style="flex:1 1 260px" />
-    <select id="filterSelect">
-      <option value="all">全部</option>
-      <option value="regular">规则动词</option>
-      <option value="irregular">不规则动词</option>
-      <option value="reflexive">自反动词</option>
-    </select>
-    <button id="resetBtn" title="清空进度（只清本地）">重置进度</button>
+    <div class="left">
+      <span class="pill" id="deckInfo">题目：0 / 0</span>
+      <span class="pill" id="modeInfo">模式：全覆盖</span>
+      <select id="typeFilter">
+        <option value="all">全部</option>
+        <option value="conj">只考变位</option>
+        <option value="cloze">只考例句</option>
+      </select>
+      <input id="search" placeholder="搜索：aimer / 喜欢 / prends / me lève ..." />
+    </div>
+    <div class="right">
+      <button id="reset" title="清空进度">重置进度</button>
+      <button id="shuffle" class="primary">打乱</button>
+    </div>
   </div>
 
   <div class="card" id="card"></div>
 
-  <div class="footer">
-    <span class="hint">快捷键：空格=翻面，←/→=上一张/下一张，Enter=提交答案</span>
+  <div class="small" style="margin-top:12px;">
+    快捷键：Enter=提交 / 翻面，1=Again，2=Good，←/→=上一题/下一题（仅浏览用）
   </div>
-
-  <details>
-    <summary>说明（点开）</summary>
-    <div class="muted" style="margin-top:8px;">
-      这套卡片默认是 <b>présent</b>。每张卡正面显示动词；下面给两条 A1 挖空句，你可以直接在输入框里填答案判对错。翻面后显示变位表与本题答案。<br/>
-      “我会了/再来一次”会影响熟练度与出牌顺序（熟练度低的更容易被抽到）。进度保存在浏览器的 localStorage。
-    </div>
-  </details>
 </div>
 
 <script>
-/* ===== 数据：按你给的表直接写入（présent） ===== */
+/* ===== 你的动词表（présent） ===== */
 const CARDS = [
   {id:"aimer", infinitive:"aimer", meaning:"喜欢", type:"regular", forms:{je:"aime", tu:"aimes", "il/elle/on":"aime", nous:"aimons", vous:"aimez", "ils/elles":"aiment"}},
   {id:"parler", infinitive:"parler", meaning:"说话", type:"regular", forms:{je:"parle", tu:"parles", "il/elle/on":"parle", nous:"parlons", vous:"parlez", "ils/elles":"parlent"}},
@@ -169,130 +257,192 @@ const CARDS = [
   {id:"réussir", infinitive:"réussir", meaning:"成功", type:"regular", forms:{je:"réussis", tu:"réussis", "il/elle/on":"réussit", nous:"réussissons", vous:"réussissez", "ils/elles":"réussissent"}},
 ];
 
-/* ===== A1 例句模板（尽量简单） ===== */
+/* 每个动词 2 条 A1 例句（你要“例句挖空”，这里保留，并会全部考到） */
 const EX_TEMPLATES = {
-  "aimer":      [{s:"je",  t:"__ le chocolat."}, {s:"nous", t:"__ la musique."}],
-  "parler":     [{s:"je",  t:"__ français."}, {s:"vous", t:"__ anglais."}],
-  "travailler": [{s:"je",  t:"__ ici."}, {s:"ils/elles", t:"__ aujourd’hui."}],
-  "profiter":   [{s:"je",  t:"__ du week-end."}, {s:"nous", t:"__ des vacances."}],
-  "visiter":    [{s:"je",  t:"__ Paris."}, {s:"nous", t:"__ un musée."}],
-  "écouter":    [{s:"je",  t:"__ la radio."}, {s:"vous", t:"__ une chanson."}],
-  "inviter":    [{s:"je",  t:"__ mon ami."}, {s:"nous", t:"__ nos voisins."}],
-  "aider":      [{s:"je",  t:"__ ma sœur."}, {s:"vous", t:"__ vos amis."}],
-  "habiter":    [{s:"je",  t:"__ à Shanghai."}, {s:"ils/elles", t:"__ en France."}],
-  "monter":     [{s:"je",  t:"__ les escaliers."}, {s:"nous", t:"__ dans le bus."}],
-  "louer":      [{s:"je",  t:"__ un appartement."}, {s:"nous", t:"__ une voiture."}],
-  "indiquer":   [{s:"vous", t:"__ le chemin."}, {s:"il/elle/on", t:"__ la rue."}],
-  "téléphoner": [{s:"je",  t:"__ à ma mère."}, {s:"vous", t:"__ à votre ami."}],
-  "voyager":    [{s:"je",  t:"__ en train."}, {s:"nous", t:"__ en Europe."}],
-  "regarder":   [{s:"je",  t:"__ un film."}, {s:"ils/elles", t:"__ la télé."}],
-  "passer":     [{s:"je",  t:"__ par ici."}, {s:"nous", t:"__ à la maison."}],
-  "donner":     [{s:"je",  t:"__ un livre à Paul."}, {s:"vous", t:"__ un cadeau."}],
-  "redoubler":  [{s:"je",  t:"__ une année."}, {s:"il/elle/on", t:"__ cette classe."}],
-  "trouver":    [{s:"je",  t:"__ la clé."}, {s:"nous", t:"__ une solution."}],
-  "rencontrer": [{s:"je",  t:"__ Marie."}, {s:"nous", t:"__ le professeur."}],
-  "retourner":  [{s:"je",  t:"__ à la maison."}, {s:"vous", t:"__ au travail."}],
-  "laisser":    [{s:"je",  t:"__ mon sac ici."}, {s:"nous", t:"__ un message."}],
-  "prier":      [{s:"je",  t:"__ en silence."}, {s:"ils/elles", t:"__ à l’église."}],
-  "présenter":  [{s:"je",  t:"__ mon ami."}, {s:"nous", t:"__ la classe."}],
-  "fumer":      [{s:"je",  t:"__ rarement."}, {s:"il/elle/on", t:"__ ici."}],
-  "refuser":    [{s:"je",  t:"__ ce café."}, {s:"ils/elles", t:"__ l’offre."}],
-  "accepter":   [{s:"je",  t:"__ la proposition."}, {s:"vous", t:"__ cette idée."}],
-  "offrir":     [{s:"je",  t:"__ un cadeau."}, {s:"nous", t:"__ notre aide."}],
-
-  "s’adresser": [{s:"je",  t:"__ à la professeure."}, {s:"vous", t:"__ au médecin."}],
-  "se lever":   [{s:"je",  t:"__ à 7 heures."}, {s:"ils/elles", t:"__ tôt."}],
-  "se coucher": [{s:"je",  t:"__ tard."}, {s:"nous", t:"__ à 22 heures."}],
-
-  "prendre":    [{s:"je",  t:"__ un café."}, {s:"vous", t:"__ le métro."}],
-  "apprendre":  [{s:"je",  t:"__ le français."}, {s:"nous", t:"__ une leçon."}],
-  "comprendre": [{s:"je",  t:"__ la question."}, {s:"vous", t:"__ bien."}],
-
-  "venir":      [{s:"je",  t:"__ ici."}, {s:"ils/elles", t:"__ demain."}],
-  "devenir":    [{s:"je",  t:"__ professeur."}, {s:"il/elle/on", t:"__ adulte."}],
-  "aller":      [{s:"je",  t:"__ à l’école."}, {s:"nous", t:"__ au cinéma."}],
-  "faire":      [{s:"je",  t:"__ du sport."}, {s:"vous", t:"__ la cuisine."}],
-  "vouloir":    [{s:"je",  t:"__ un thé."}, {s:"vous", t:"__ venir ?"}],
-  "pouvoir":    [{s:"je",  t:"__ venir."}, {s:"vous", t:"__ m’aider ?"}],
-  "savoir":     [{s:"je",  t:"__ la réponse."}, {s:"vous", t:"__ où c’est ?"}],
-  "connaître":  [{s:"je",  t:"__ cette ville."}, {s:"vous", t:"__ Marie ?"}],
-  "voir":       [{s:"je",  t:"__ la tour."}, {s:"nous", t:"__ un chien."}],
-  "recevoir":   [{s:"je",  t:"__ une lettre."}, {s:"nous", t:"__ un message."}],
-  "lire":       [{s:"je",  t:"__ un livre."}, {s:"vous", t:"__ le journal."}],
-  "écrire":     [{s:"je",  t:"__ une carte."}, {s:"nous", t:"__ un e-mail."}],
-  "suivre":     [{s:"je",  t:"__ le cours."}, {s:"nous", t:"__ le guide."}],
-  "poursuivre": [{s:"je",  t:"__ mes études."}, {s:"nous", t:"__ la discussion."}],
-  "partir":     [{s:"je",  t:"__ à 8 heures."}, {s:"ils/elles", t:"__ ce soir."}],
-  "sortir":     [{s:"je",  t:"__ avec des amis."}, {s:"nous", t:"__ maintenant."}],
-  "réussir":    [{s:"je",  t:"__ l’examen."}, {s:"vous", t:"__ facilement."}],
+  "aimer":      [{s:"je",  t:"____ le chocolat."}, {s:"nous", t:"____ la musique."}],
+  "parler":     [{s:"je",  t:"____ français."}, {s:"vous", t:"____ anglais."}],
+  "travailler": [{s:"je",  t:"____ ici."}, {s:"ils/elles", t:"____ aujourd’hui."}],
+  "profiter":   [{s:"je",  t:"____ du week-end."}, {s:"nous", t:"____ des vacances."}],
+  "visiter":    [{s:"je",  t:"____ Paris."}, {s:"nous", t:"____ un musée."}],
+  "écouter":    [{s:"je",  t:"____ la radio."}, {s:"vous", t:"____ une chanson."}],
+  "inviter":    [{s:"je",  t:"____ mon ami."}, {s:"nous", t:"____ nos voisins."}],
+  "aider":      [{s:"je",  t:"____ ma sœur."}, {s:"vous", t:"____ vos amis."}],
+  "habiter":    [{s:"je",  t:"____ à Shanghai."}, {s:"ils/elles", t:"____ en France."}],
+  "monter":     [{s:"je",  t:"____ les escaliers."}, {s:"nous", t:"____ dans le bus."}],
+  "louer":      [{s:"je",  t:"____ un appartement."}, {s:"nous", t:"____ une voiture."}],
+  "indiquer":   [{s:"vous",t:"____ le chemin."}, {s:"il/elle/on", t:"____ la rue."}],
+  "téléphoner": [{s:"je",  t:"____ à ma mère."}, {s:"vous", t:"____ à votre ami."}],
+  "voyager":    [{s:"je",  t:"____ en train."}, {s:"nous", t:"____ en Europe."}],
+  "regarder":   [{s:"je",  t:"____ un film."}, {s:"ils/elles", t:"____ la télé."}],
+  "passer":     [{s:"je",  t:"____ par ici."}, {s:"nous", t:"____ à la maison."}],
+  "donner":     [{s:"je",  t:"____ un livre à Paul."}, {s:"vous", t:"____ un cadeau."}],
+  "redoubler":  [{s:"je",  t:"____ une année."}, {s:"il/elle/on", t:"____ cette classe."}],
+  "trouver":    [{s:"je",  t:"____ la clé."}, {s:"nous", t:"____ une solution."}],
+  "rencontrer": [{s:"je",  t:"____ Marie."}, {s:"nous", t:"____ le professeur."}],
+  "retourner":  [{s:"je",  t:"____ à la maison."}, {s:"vous", t:"____ au travail."}],
+  "laisser":    [{s:"je",  t:"____ mon sac ici."}, {s:"nous", t:"____ un message."}],
+  "prier":      [{s:"je",  t:"____ en silence."}, {s:"ils/elles", t:"____ à l’église."}],
+  "présenter":  [{s:"je",  t:"____ mon ami."}, {s:"nous", t:"____ la classe."}],
+  "fumer":      [{s:"je",  t:"____ rarement."}, {s:"il/elle/on", t:"____ ici."}],
+  "refuser":    [{s:"je",  t:"____ ce café."}, {s:"ils/elles", t:"____ l’offre."}],
+  "accepter":   [{s:"je",  t:"____ la proposition."}, {s:"vous", t:"____ cette idée."}],
+  "offrir":     [{s:"je",  t:"____ un cadeau."}, {s:"nous", t:"____ notre aide."}],
+  "s’adresser": [{s:"je",  t:"____ à la professeure."}, {s:"vous", t:"____ au médecin."}],
+  "se lever":   [{s:"je",  t:"____ à 7 heures."}, {s:"ils/elles", t:"____ tôt."}],
+  "se coucher": [{s:"je",  t:"____ tard."}, {s:"nous", t:"____ à 22 heures."}],
+  "prendre":    [{s:"je",  t:"____ un café."}, {s:"vous", t:"____ le métro."}],
+  "apprendre":  [{s:"je",  t:"____ le français."}, {s:"nous", t:"____ une leçon."}],
+  "comprendre": [{s:"je",  t:"____ la question."}, {s:"vous", t:"____ bien."}],
+  "venir":      [{s:"je",  t:"____ ici."}, {s:"ils/elles", t:"____ demain."}],
+  "devenir":    [{s:"je",  t:"____ professeur."}, {s:"il/elle/on", t:"____ adulte."}],
+  "aller":      [{s:"je",  t:"____ à l’école."}, {s:"nous", t:"____ au cinéma."}],
+  "faire":      [{s:"je",  t:"____ du sport."}, {s:"vous", t:"____ la cuisine."}],
+  "vouloir":    [{s:"je",  t:"____ un thé."}, {s:"vous", t:"____ venir ?"}],
+  "pouvoir":    [{s:"je",  t:"____ venir."}, {s:"vous", t:"____ m’aider ?"}],
+  "savoir":     [{s:"je",  t:"____ la réponse."}, {s:"vous", t:"____ où c’est ?"}],
+  "connaître":  [{s:"je",  t:"____ cette ville."}, {s:"vous", t:"____ Marie ?"}],
+  "voir":       [{s:"je",  t:"____ la tour."}, {s:"nous", t:"____ un chien."}],
+  "recevoir":   [{s:"je",  t:"____ une lettre."}, {s:"nous", t:"____ un message."}],
+  "lire":       [{s:"je",  t:"____ un livre."}, {s:"vous", t:"____ le journal."}],
+  "écrire":     [{s:"je",  t:"____ une carte."}, {s:"nous", t:"____ un e-mail."}],
+  "suivre":     [{s:"je",  t:"____ le cours."}, {s:"nous", t:"____ le guide."}],
+  "poursuivre": [{s:"je",  t:"____ mes études."}, {s:"nous", t:"____ la discussion."}],
+  "partir":     [{s:"je",  t:"____ à 8 heures."}, {s:"ils/elles", t:"____ ce soir."}],
+  "sortir":     [{s:"je",  t:"____ avec des amis."}, {s:"nous", t:"____ maintenant."}],
+  "réussir":    [{s:"je",  t:"____ l’examen."}, {s:"vous", t:"____ facilement."}],
 };
 
-const LS_KEY = "fr_verbs_flashcards_v2_progress";
+const SUBJECTS = ["je","tu","il/elle/on","nous","vous","ils/elles"];
+const LS_KEY = "fr_anki_like_v1";
 
-function loadProgress(){
-  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
-  catch(e){ return {}; }
-}
-function saveProgress(p){ localStorage.setItem(LS_KEY, JSON.stringify(p)); }
-
-let progress = loadProgress(); // { [id]: {score:number, seen:number} }
-
-function scoreOf(id){ return progress[id]?.score ?? 0; }
-function bump(id, delta){
-  const cur = progress[id] || {score:0, seen:0};
-  cur.score = Math.max(-3, Math.min(10, cur.score + delta));
-  cur.seen += 1;
-  progress[id] = cur;
-  saveProgress(progress);
-}
-
-function isVowelSound(s){
-  // 简化：元音/哑音h开头 -> 需要 j'
-  return /^[aeiouyàâäéèêëïîôöùûüœh]/i.test(s.trim());
-}
-
-function subjectText(subjKey){
-  // 用在句子开头：Je / J' / Tu / Il / Elle / On / Nous / Vous / Ils / Elles
-  if(subjKey === "je") return "Je";
-  if(subjKey === "tu") return "Tu";
-  if(subjKey === "nous") return "Nous";
-  if(subjKey === "vous") return "Vous";
-  if(subjKey === "il/elle/on") return "Il";
-  if(subjKey === "ils/elles") return "Ils";
+/* ===== 工具函数 ===== */
+const norm = s => (s||"").trim().replace(/\s+/g," ").replaceAll("’","'").toLowerCase();
+const esc = s => (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+function isVowelSound(s){ return /^[aeiouyàâäéèêëïîôöùûüœh]/i.test((s||"").trim()); }
+function subjLabel(subj, answer){
+  if(subj === "je") return isVowelSound(answer) ? "J’" : "Je";
+  if(subj === "tu") return "Tu";
+  if(subj === "nous") return "Nous";
+  if(subj === "vous") return "Vous";
+  if(subj === "il/elle/on") return "Il";
+  if(subj === "ils/elles") return "Ils";
   return "Je";
 }
-
-function normalizeInfinitive(inf){
-  return (inf || "").replace(/\s+/g," ").trim();
-}
-
-function templateKeyForCard(card){
-  // 用 infinitive 精确匹配；自反动词用规范写法
-  const inf = normalizeInfinitive(card.infinitive);
+function tKey(inf){
   if(inf === "s’adresser") return "s’adresser";
   if(inf === "se lever") return "se lever";
   if(inf === "se coucher") return "se coucher";
   return inf;
 }
 
-function buildExamples(card){
-  const key = templateKeyForCard(card);
-  const ex = EX_TEMPLATES[key] || [
-    {s:"je", t:"__ aujourd’hui."},
-    {s:"nous", t:"__ maintenant."}
-  ];
-  return ex.slice(0,2).map(one => {
-    const subj = one.s;
-    const ans = card.forms[subj] || "";
-    let S = subjectText(subj);
+/* ===== 构造“全覆盖题库” =====
+   - conj：每个动词 x 6 人称  -> 6 题
+   - cloze：每个动词 2 句模板 -> 2 题
+*/
+function buildItems(){
+  const items = [];
+  for(const c of CARDS){
+    // 1) 变位题：每个动词每个人称都考到
+    for(const s of SUBJECTS){
+      const ans = c.forms[s];
+      const S = subjLabel(s, ans);
+      // 简单 A1 句型：根据动词类型选一个中性补语
+      let rest = "____ aujourd’hui.";
+      if(tKey(c.infinitive) === "aller") rest = "____ à l’école.";
+      else if(tKey(c.infinitive) === "venir") rest = "____ ici.";
+      else if(tKey(c.infinitive) === "faire") rest = "____ du sport.";
+      else if(tKey(c.infinitive) === "avoir") rest = "____ un livre.";
+      else if(tKey(c.infinitive) === "être") rest = "____ étudiant.";
+      else if(c.type === "reflexive") rest = "____ maintenant.";
+      const sentence = `${S} ${rest}`.replace(/\s+/g," ").trim();
 
-    // 处理 Je -> J' 的省音（当答案以元音/哑音h开头）
-    if(subj === "je" && isVowelSound(ans)) S = "J’";
+      items.push({
+        itemId: `conj:${c.id}:${s}`,
+        kind: "conj",
+        verbId: c.id,
+        infinitive: c.infinitive,
+        meaning: c.meaning,
+        subject: s,
+        sentence,
+        answer: ans,
+      });
+    }
 
-    // 处理 je 的答案一般不带主语，所以直接替换 "__"
-    const sentence = `${S} ${one.t}`.replace("__", "____").replace(/\s+/g, " ").trim();
-    return { sentence, answer: ans };
+    // 2) 例句题：每个动词两句都考到
+    const ex = EX_TEMPLATES[tKey(c.infinitive)];
+    if(ex && ex.length){
+      ex.slice(0,2).forEach((e, i) => {
+        const ans = c.forms[e.s];
+        const S = subjLabel(e.s, ans);
+        const sentence = `${S} ${e.t}`.replace(/\s+/g," ").trim();
+        items.push({
+          itemId: `cloze:${c.id}:${i}`,
+          kind: "cloze",
+          verbId: c.id,
+          infinitive: c.infinitive,
+          meaning: c.meaning,
+          subject: e.s,
+          sentence,
+          answer: ans,
+        });
+      });
+    }
+  }
+  return items;
+}
+
+/* ===== 进度（Leitner 简化） =====
+   box: 0..4。Good -> box+1，Again -> box=0
+   全覆盖：先把没做过的（seen=0）做完，再按 box 优先复习
+*/
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){ return {}; }
+}
+function saveState(s){ localStorage.setItem(LS_KEY, JSON.stringify(s)); }
+
+let state = loadState(); // { [itemId]: {seen:number, box:number} }
+function getP(itemId){ return state[itemId] || {seen:0, box:0}; }
+function setP(itemId, p){ state[itemId]=p; saveState(state); }
+
+let itemsAll = buildItems();
+let itemsView = itemsAll.slice();
+let queue = [];
+let idx = 0;
+let revealed = false;
+let shuffled = false;
+
+const $card = document.getElementById("card");
+const $deckInfo = document.getElementById("deckInfo");
+const $typeFilter = document.getElementById("typeFilter");
+const $search = document.getElementById("search");
+
+function rebuildQueue(){
+  const q = ($search.value||"").trim().toLowerCase();
+  const type = $typeFilter.value;
+
+  itemsView = itemsAll.filter(it => {
+    if(type === "conj" && it.kind !== "conj") return false;
+    if(type === "cloze" && it.kind !== "cloze") return false;
+
+    if(!q) return true;
+    const hit = `${it.infinitive} ${it.meaning} ${it.subject} ${it.sentence} ${it.answer}`.toLowerCase();
+    return hit.includes(q);
   });
+
+  // 全覆盖优先：seen=0 的排最前，然后 box 小的靠前
+  queue = itemsView.slice().sort((a,b)=>{
+    const pa = getP(a.itemId), pb = getP(b.itemId);
+    if(pa.seen !== pb.seen) return pa.seen - pb.seen;        // 0 优先
+    if(pa.box !== pb.box) return pa.box - pb.box;            // box 小优先
+    return a.itemId.localeCompare(b.itemId);
+  });
+
+  if(shuffled) queue = shuffle(queue);
+
+  idx = 0;
+  revealed = false;
+  render();
+  updateTop();
 }
 
 function shuffle(arr){
@@ -304,241 +454,193 @@ function shuffle(arr){
   return a;
 }
 
-function escapeHtml(s){
-  return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#39;");
+function updateTop(){
+  const total = queue.length;
+  if(total === 0){
+    $deckInfo.textContent = `题目：0 / 0`;
+    return;
+  }
+  const cur = queue[idx];
+  const done = queue.filter(it => getP(it.itemId).seen > 0).length;
+  const unseen = queue.filter(it => getP(it.itemId).seen === 0).length;
+  $deckInfo.textContent = `题目：${idx+1} / ${total} ｜ 未做完：${unseen} ｜ 已做：${done}`;
 }
 
-let flipped = false;
-let shuffled = false;
-let idx = 0;
-
-const $card = document.getElementById("card");
-const $modePill = document.getElementById("modePill");
-const $statsPill = document.getElementById("statsPill");
-const $searchBox = document.getElementById("searchBox");
-const $filterSelect = document.getElementById("filterSelect");
-
-let viewCards = CARDS.slice();     // 经过筛选搜索后的卡片
-let order = viewCards.map(c=>c.id); // 当前顺序（id列表）
-
-function applySearchAndFilter(){
-  const q = ($searchBox.value || "").trim().toLowerCase();
-  const f = $filterSelect.value;
-
-  viewCards = CARDS.filter(c => {
-    if(f === "regular" && c.type !== "regular") return false;
-    if(f === "irregular" && c.type !== "irregular") return false;
-    if(f === "reflexive" && c.type !== "reflexive") return false;
-
-    if(!q) return true;
-
-    const hit = [
-      c.infinitive, c.meaning, c.type,
-      ...Object.values(c.forms)
-    ].join(" ").toLowerCase();
-
-    return hit.includes(q);
-  });
-
-  // 默认“复习优先”：熟练度低的靠前
-  order = viewCards.map(c=>c.id).sort((a,b)=>{
-    const sa = scoreOf(a), sb = scoreOf(b);
-    if(sa !== sb) return sa - sb;
-    return a.localeCompare(b);
-  });
-
-  if(shuffled) order = shuffle(order);
-
-  idx = 0;
-  flipped = false;
-  render();
-}
-
-function currentCard(){
-  const id = order[idx];
-  return viewCards.find(c=>c.id === id);
+function current(){
+  return queue[idx] || null;
 }
 
 function render(){
-  const c = currentCard();
-  const total = order.length;
-  if(!c || total === 0){
-    $card.innerHTML = `<div class="muted">没有匹配到卡片。换个搜索词或筛选条件。</div>`;
-    $statsPill.textContent = `0 / 0`;
+  const it = current();
+  if(!it){
+    $card.innerHTML = `<div class="muted">没有匹配到题目。</div>`;
     return;
   }
 
-  const pos = idx + 1;
-  const sc = scoreOf(c.id);
-  const examples = buildExamples(c);
+  const p = getP(it.itemId);
+  const verbLine = `${it.infinitive}（${it.meaning}）`;
+  const kindTag = it.kind === "conj" ? "变位" : "例句";
+  const boxTag = `Box ${p.box}`;
 
-  $statsPill.textContent = `${pos} / ${total} ｜ 熟练度：${sc}`;
+  const front = `
+    <div class="frontTitle">
+      <div>
+        <p class="verb">${esc(verbLine)}</p>
+        <div class="sub">présent ｜ ${kindTag} ｜ ${boxTag}</div>
+      </div>
+      <div class="pill">${it.subject}</div>
+    </div>
 
-  if(!flipped){
-    $card.innerHTML = `
-      <div class="row">
-        <div class="col">
-          <p class="big">${escapeHtml(c.infinitive)}（${escapeHtml(c.meaning)}）</p>
-          <div class="muted">时态：présent ｜ 类型：${c.type === "regular" ? "规则" : (c.type === "reflexive" ? "自反" : "不规则")}</div>
+    <div class="q">
+      ${esc(it.sentence)}
+    </div>
 
-          <div class="qa">
-            <div class="muted">A1 挖空（直接做题）：</div>
-            <div class="qline">1）${escapeHtml(examples[0].sentence)}</div>
-            <div class="qline">2）${escapeHtml(examples[1].sentence)}</div>
+    <div class="answerRow">
+      <input id="ans" autocomplete="off" placeholder="输入答案（只填动词形式）" />
+      <button id="check" class="primary">提交 / 翻面</button>
+    </div>
+    <div class="msg" id="msg"></div>
 
-            <div class="qctrl">
-              <input id="ansInput" placeholder="输入答案（比如: vais / me lève / s’adresse）" style="flex:1 1 320px" />
-              <button id="checkBtn">提交</button>
-              <button id="revealBtn">显示答案</button>
-              <span class="feedback" id="feedback"></span>
-            </div>
-            <div class="muted">提示：答案只需要填动词形式，不用填主语。</div>
-          </div>
-        </div>
+    <div class="back" id="back" style="display:none;"></div>
 
-        <div class="col">
-          <div class="muted">翻面后显示变位表与本题答案。</div>
-        </div>
+    <div class="actions">
+      <div class="leftBtn">
+        <button id="again" class="again" disabled>Again（1）</button>
+        <button id="good" class="good" disabled>Good（2）</button>
+      </div>
+      <div class="hint">先提交再评分；评分后自动下一题。</div>
+    </div>
+  `;
+
+  $card.innerHTML = front;
+
+  const $ans = document.getElementById("ans");
+  const $check = document.getElementById("check");
+  const $msg = document.getElementById("msg");
+  const $back = document.getElementById("back");
+  const $again = document.getElementById("again");
+  const $good = document.getElementById("good");
+
+  $ans.focus();
+
+  function showBack(isCorrect, user){
+    revealed = true;
+    const correct = it.answer;
+
+    $msg.textContent = isCorrect ? "对。" : `不对。你的答案：${user || "（空）"}`;
+    $msg.className = "msg " + (isCorrect ? "ok" : "bad");
+
+    // 反面：显示正确答案 + 全变位（更像 Anki）
+    const cardObj = CARDS.find(c=>c.id===it.verbId);
+    const f = cardObj.forms;
+
+    $back.style.display = "block";
+    $back.innerHTML = `
+      <div>正确答案：<b>${esc(correct)}</b></div>
+      <div class="miniTable" style="margin-top:10px;">
+        ${miniKV("je", f["je"])}
+        ${miniKV("tu", f["tu"])}
+        ${miniKV("il/elle/on", f["il/elle/on"])}
+        ${miniKV("nous", f["nous"])}
+        ${miniKV("vous", f["vous"])}
+        ${miniKV("ils/elles", f["ils/elles"])}
       </div>
     `;
 
-    // 绑定判题
-    const ansInput = document.getElementById("ansInput");
-    const checkBtn = document.getElementById("checkBtn");
-    const revealBtn = document.getElementById("revealBtn");
-    const feedback = document.getElementById("feedback");
-
-    function normalizeAns(s){
-      return (s||"").trim().replace(/\s+/g," ").replaceAll("’","'").toLowerCase();
-    }
-    const answers = examples.map(e => normalizeAns(e.answer));
-
-    function check(){
-      const user = normalizeAns(ansInput.value);
-      if(!user){
-        feedback.textContent = "先输入答案。";
-        feedback.className = "feedback bad";
-        return;
-      }
-      if(answers.includes(user)){
-        feedback.textContent = "对。";
-        feedback.className = "feedback ok";
-        bump(c.id, +1);
-        $statsPill.textContent = `${pos} / ${total} ｜ 熟练度：${scoreOf(c.id)}`;
-      }else{
-        feedback.textContent = "不对。";
-        feedback.className = "feedback bad";
-        bump(c.id, -1);
-        $statsPill.textContent = `${pos} / ${total} ｜ 熟练度：${scoreOf(c.id)}`;
-      }
-    }
-
-    checkBtn.addEventListener("click", check);
-    ansInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") check(); });
-
-    revealBtn.addEventListener("click", ()=>{
-      feedback.textContent = `答案：1）${examples[0].answer} ｜ 2）${examples[1].answer}`;
-      feedback.className = "feedback";
-    });
-
-  } else {
-    const forms = c.forms;
-    const examples = buildExamples(c);
-
-    $card.innerHTML = `
-      <div class="row">
-        <div class="col">
-          <p class="big">${escapeHtml(c.infinitive)}（${escapeHtml(c.meaning)}）</p>
-          <div class="muted">présent</div>
-
-          <table>
-            <tr><th>人称</th><th>变位</th></tr>
-            <tr><td>je</td><td>${escapeHtml(forms["je"] || "")}</td></tr>
-            <tr><td>tu</td><td>${escapeHtml(forms["tu"] || "")}</td></tr>
-            <tr><td>il/elle/on</td><td>${escapeHtml(forms["il/elle/on"] || "")}</td></tr>
-            <tr><td>nous</td><td>${escapeHtml(forms["nous"] || "")}</td></tr>
-            <tr><td>vous</td><td>${escapeHtml(forms["vous"] || "")}</td></tr>
-            <tr><td>ils/elles</td><td>${escapeHtml(forms["ils/elles"] || "")}</td></tr>
-          </table>
-        </div>
-
-        <div class="col">
-          <div class="muted">A1 挖空答案：</div>
-          <div class="qa">
-            <div class="qline">1）${escapeHtml(examples[0].sentence.replace("____", `<b>${examples[0].answer}</b>`))}</div>
-            <div class="qline">2）${escapeHtml(examples[1].sentence.replace("____", `<b>${examples[1].answer}</b>`))}</div>
-            <div class="muted" style="margin-top:10px;">也可以直接用“我会了/再来一次”控制复习频率。</div>
-          </div>
-        </div>
-      </div>
-    `.replaceAll("&lt;b&gt;","<b>").replaceAll("&lt;/b&gt;","</b>");
+    $again.disabled = false;
+    $good.disabled = false;
   }
+
+  function miniKV(k,v){
+    return `<div class="kv"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div></div>`;
+  }
+
+  function check(){
+    const user = norm($ans.value);
+    const ok = user && user === norm(it.answer);
+    // 提交就算 seen+1
+    const p = getP(it.itemId);
+    p.seen += 1;
+    setP(it.itemId, p);
+    showBack(!!ok, $ans.value.trim());
+  }
+
+  function grade(isGood){
+    const p = getP(it.itemId);
+    if(isGood){
+      p.box = Math.min(4, p.box + 1);
+    }else{
+      p.box = 0;
+    }
+    setP(it.itemId, p);
+    next();
+  }
+
+  function next(){
+    if(queue.length === 0) return;
+    idx = (idx + 1) % queue.length;
+    revealed = false;
+    render();
+    updateTop();
+  }
+  function prev(){
+    if(queue.length === 0) return;
+    idx = (idx - 1 + queue.length) % queue.length;
+    revealed = false;
+    render();
+    updateTop();
+  }
+
+  $check.addEventListener("click", ()=>{
+    if(!revealed) check();
+  });
+  $ans.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){
+      e.preventDefault();
+      if(!revealed) check();
+    }
+  });
+
+  $again.addEventListener("click", ()=>grade(false));
+  $good.addEventListener("click", ()=>grade(true));
+
+  // 浏览用左右键
+  window.__navPrev = prev;
+  window.__navNext = next;
 }
 
-function next(){
-  if(order.length === 0) return;
-  idx = (idx + 1) % order.length;
-  flipped = false;
-  render();
-}
-function prev(){
-  if(order.length === 0) return;
-  idx = (idx - 1 + order.length) % order.length;
-  flipped = false;
-  render();
-}
-function flip(){
-  if(order.length === 0) return;
-  flipped = !flipped;
-  render();
-}
-
-document.getElementById("nextBtn").addEventListener("click", next);
-document.getElementById("prevBtn").addEventListener("click", prev);
-document.getElementById("flipBtn").addEventListener("click", flip);
-
-document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+document.getElementById("shuffle").addEventListener("click", ()=>{
   shuffled = !shuffled;
-  $modePill.textContent = shuffled ? "模式：随机" : "模式：顺序";
-  applySearchAndFilter();
+  rebuildQueue();
 });
 
-document.getElementById("knowBtn").addEventListener("click", ()=>{
-  const c = currentCard();
-  if(!c) return;
-  bump(c.id, +2);
-  next();
-});
-
-document.getElementById("againBtn").addEventListener("click", ()=>{
-  const c = currentCard();
-  if(!c) return;
-  bump(c.id, -2);
-  next();
-});
-
-document.getElementById("resetBtn").addEventListener("click", ()=>{
+document.getElementById("reset").addEventListener("click", ()=>{
   localStorage.removeItem(LS_KEY);
-  progress = {};
-  applySearchAndFilter();
+  state = {};
+  rebuildQueue();
 });
 
-$searchBox.addEventListener("input", ()=>{
-  // 小延迟防抖
+$typeFilter.addEventListener("change", rebuildQueue);
+$search.addEventListener("input", ()=>{
   clearTimeout(window.__t);
-  window.__t = setTimeout(applySearchAndFilter, 120);
+  window.__t = setTimeout(rebuildQueue, 120);
 });
-$filterSelect.addEventListener("change", applySearchAndFilter);
 
 document.addEventListener("keydown", (e)=>{
   if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
-  if(e.key === "ArrowRight") next();
-  if(e.key === "ArrowLeft") prev();
-  if(e.key === " ") { e.preventDefault(); flip(); }
+  if(e.key === "ArrowLeft") window.__navPrev && window.__navPrev();
+  if(e.key === "ArrowRight") window.__navNext && window.__navNext();
+  if(e.key === "1"){
+    const btn = document.getElementById("again");
+    if(btn && !btn.disabled) btn.click();
+  }
+  if(e.key === "2"){
+    const btn = document.getElementById("good");
+    if(btn && !btn.disabled) btn.click();
+  }
 });
 
-applySearchAndFilter();
+rebuildQueue();
 </script>
 </body>
 </html>
