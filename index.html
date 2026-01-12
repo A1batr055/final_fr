@@ -7,8 +7,6 @@
   <style>
     :root{
       --bg:#0b0c10;
-      --panel:#111319;
-      --card:#151824;
       --text:#e8eaf0;
       --muted:#a8adbd;
       --line:rgba(255,255,255,.10);
@@ -183,11 +181,69 @@ const CARDS = [
 ];
 
 const SUBJECTS = ["je","tu","il/elle/on","nous","vous","ils/elles"];
-const LS_KEY = "fr_anki_conj_only_v1";
+const LS_KEY = "fr_anki_conj_only_v2_human_sent";
+
+/* ===== A1 句子库：每个动词 6 条（对应 6 人称） ===== */
+const SENT = {
+  aimer:      ["____ le café.", "____ le chocolat.", "____ cette musique.", "____ les films.", "____ le thé ?", "____ la pizza."],
+  parler:     ["____ français.", "____ anglais.", "____ avec Marie.", "____ ensemble.", "____ trop vite.", "____ en classe."],
+  travailler: ["____ au bureau.", "____ ici.", "____ le matin.", "____ à Paris.", "____ aujourd’hui ?", "____ le week-end."],
+  profiter:   ["____ du week-end.", "____ du soleil.", "____ de la fête.", "____ des vacances.", "____ du temps libre.", "____ du voyage."],
+  visiter:    ["____ Paris.", "____ un musée.", "____ la ville.", "____ un château.", "____ la Tour Eiffel.", "____ un village."],
+  "écouter":  ["____ la radio.", "____ la musique.", "____ le professeur.", "____ un podcast.", "____ cette chanson.", "____ la télé."],
+  inviter:    ["____ mon ami.", "____ ta sœur.", "____ Paul.", "____ nos voisins.", "____ vos amis.", "____ Marie."],
+  aider:      ["____ mon frère.", "____ ta mère.", "____ un ami.", "____ nos parents.", "____ vos collègues.", "____ leurs amis."],
+  habiter:    ["____ à Shanghai.", "____ à Pékin.", "____ en France.", "____ en ville.", "____ ici.", "____ au Canada."],
+  monter:     ["____ les escaliers.", "____ dans le bus.", "____ au premier étage.", "____ dans la voiture.", "____ là-haut.", "____ sur la scène."],
+  louer:      ["____ un appartement.", "____ une voiture.", "____ un studio.", "____ une maison.", "____ une chambre.", "____ des vélos."],
+  indiquer:   ["____ la rue.", "____ le chemin.", "____ la station.", "____ l’adresse.", "____ le numéro.", "____ la sortie."],
+  "téléphoner":["____ à ma mère.", "____ à ton ami.", "____ à Marie.", "____ à nos parents.", "____ au bureau.", "____ à leurs amis."],
+  voyager:    ["____ en train.", "____ en bus.", "____ en Europe.", "____ en France.", "____ souvent.", "____ en été."],
+  regarder:   ["____ un film.", "____ la télé.", "____ le match.", "____ une série.", "____ cette photo.", "____ le ciel."],
+  passer:     ["____ par ici.", "____ devant l’école.", "____ à la maison.", "____ au supermarché.", "____ par la gare.", "____ chez moi."],
+  donner:     ["____ un livre à Paul.", "____ un stylo.", "____ un conseil.", "____ un cadeau.", "____ mon numéro.", "____ des fleurs."],
+  redoubler:  ["____ une année.", "____ cette classe.", "____ le cours.", "____ la première année.", "____ l’examen ?", "____ la matière."],
+  trouver:    ["____ la clé.", "____ mon téléphone.", "____ la solution.", "____ une idée.", "____ un restaurant.", "____ la gare."],
+  rencontrer: ["____ Marie.", "____ le professeur.", "____ un ami.", "____ des collègues.", "____ le directeur.", "____ leurs amis."],
+  retourner:  ["____ à la maison.", "____ au travail.", "____ en ville.", "____ à l’école.", "____ au bureau.", "____ au cinéma."],
+  laisser:    ["____ mon sac ici.", "____ un message.", "____ la porte ouverte.", "____ un mot.", "____ votre manteau.", "____ la voiture."],
+  prier:      ["____ en silence.", "____ à l’église.", "____ pour la paix.", "____ ensemble.", "____ ici.", "____ le soir."],
+  "présenter":["____ mon ami.", "____ ta sœur.", "____ le projet.", "____ la classe.", "____ la famille.", "____ le professeur."],
+  fumer:      ["____ rarement.", "____ dehors.", "____ ici.", "____ après le repas.", "____ ?", "____ dans le parc."],
+  refuser:    ["____ ce café.", "____ ce gâteau.", "____ l’offre.", "____ la proposition.", "____ cette idée.", "____ l’invitation."],
+  accepter:   ["____ la proposition.", "____ l’idée.", "____ le cadeau.", "____ l’invitation.", "____ le projet.", "____ la demande."],
+  offrir:     ["____ un cadeau.", "____ un café.", "____ de l’aide.", "____ des fleurs.", "____ un livre.", "____ un dîner."],
+
+  s_adresser: ["____ au professeur.", "____ à la police.", "____ au médecin.", "____ au bureau.", "____ au directeur.", "____ au service."],
+  se_lever:   ["____ à sept heures.", "____ tôt.", "____ à huit heures.", "____ à six heures.", "____ tard.", "____ le matin."],
+  se_coucher: ["____ tôt.", "____ tard.", "____ à dix heures.", "____ à onze heures.", "____ maintenant.", "____ après le film."],
+
+  prendre:    ["____ un café.", "____ le métro.", "____ une photo.", "____ le bus.", "____ un taxi.", "____ un sandwich."],
+  apprendre:  ["____ le français.", "____ les mots.", "____ la leçon.", "____ la grammaire.", "____ vite.", "____ en classe."],
+  comprendre: ["____ la question.", "____ bien.", "____ le problème.", "____ la leçon.", "____ ?", "____ tout."],
+  venir:      ["____ ici.", "____ avec moi.", "____ demain.", "____ à la maison.", "____ ce soir.", "____ maintenant."],
+  devenir:    ["____ professeur.", "____ médecin.", "____ adulte.", "____ amis.", "____ célèbre.", "____ étudiants."],
+
+  aller:      ["____ à l’école.", "____ au cinéma.", "____ à Paris.", "____ au restaurant.", "____ au travail.", "____ à la maison."],
+  faire:      ["____ du sport.", "____ les courses.", "____ la cuisine.", "____ un gâteau.", "____ une photo.", "____ les devoirs."],
+  vouloir:    ["____ un café.", "____ une eau.", "____ venir ?", "____ partir.", "____ un thé.", "____ manger."],
+  pouvoir:    ["____ venir.", "____ m’aider ?", "____ entrer ?", "____ parler.", "____ répéter ?", "____ rester."],
+  savoir:     ["____ la réponse.", "____ où c’est ?", "____ son nom.", "____ la vérité.", "____ ?", "____ le chemin."],
+  "connaître":["____ cette ville.", "____ Marie ?", "____ le quartier.", "____ la culture.", "____ ce professeur ?", "____ leurs amis."],
+  voir:       ["____ la tour.", "____ la mer.", "____ le film.", "____ un chien.", "____ la photo.", "____ la montagne."],
+  recevoir:   ["____ une lettre.", "____ un message.", "____ un cadeau.", "____ des nouvelles.", "____ un e-mail.", "____ des appels."],
+  lire:       ["____ un livre.", "____ le journal.", "____ la notice.", "____ un roman.", "____ ce texte.", "____ des BD."],
+  "écrire":   ["____ une carte.", "____ un e-mail.", "____ une lettre.", "____ un message.", "____ ton nom.", "____ des textes."],
+  suivre:     ["____ le cours.", "____ le guide.", "____ la route.", "____ la leçon.", "____ la règle.", "____ le professeur."],
+  poursuivre: ["____ mes études.", "____ la discussion.", "____ le travail.", "____ le projet.", "____ ?", "____ la route."],
+  partir:     ["____ à huit heures.", "____ maintenant.", "____ ce soir.", "____ demain.", "____ tôt.", "____ ensemble."],
+  sortir:     ["____ avec des amis.", "____ ce soir.", "____ maintenant.", "____ après le cours.", "____ ?", "____ le week-end."],
+  "réussir":  ["____ l’examen.", "____ le test.", "____ le projet.", "____ le travail.", "____ facilement.", "____ à l’école."],
+};
 
 /* ===== 工具 ===== */
 const norm = s => (s||"").trim().replace(/\s+/g," ").replaceAll("’","'").toLowerCase();
-const esc = s => (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+const esc  = s => (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
 function isVowelSound(s){ return /^[aeiouyàâäéèêëïîôöùûüœh]/i.test((s||"").trim()); }
 function subjLabel(subj, answer){
   if(subj === "je") return isVowelSound(answer) ? "J’" : "Je";
@@ -205,31 +261,6 @@ let state = loadState(); // { [itemId]: {seen:number, box:number} }
 function getP(itemId){ return state[itemId] || {seen:0, box:0}; }
 function setP(itemId, p){ state[itemId]=p; saveState(state); }
 
-/* ===== 题库：严格 词数×6 ===== */
-function buildItems(){
-  const items = [];
-  for(const c of CARDS){
-    for(const s of SUBJECTS){
-      const ans = c.forms[s];
-      const S = subjLabel(s, ans);
-
-      // 统一简单句型，不引入额外词汇负担
-      // 自反动词也用中性时间状语，保证句子成立
-      const sentence = `${S} ____ aujourd’hui.`.replace(/\s+/g," ").trim();
-
-      items.push({
-        itemId: `conj:${c.id}:${s}`,
-        verbId: c.id,
-        infinitive: c.infinitive,
-        meaning: c.meaning,
-        subject: s,
-        sentence,
-        answer: ans,
-      });
-    }
-  }
-  return items;
-}
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -237,6 +268,30 @@ function shuffle(arr){
     [a[i],a[j]] = [a[j],a[i]];
   }
   return a;
+}
+
+/* ===== 题库：严格 词数×6 ===== */
+function buildItems(){
+  const items = [];
+  for(const c of CARDS){
+    const sents = SENT[c.id] || ["____ .","____ .","____ .","____ .","____ ?","____ ."];
+    for(let i=0;i<SUBJECTS.length;i++){
+      const subj = SUBJECTS[i];
+      const ans = c.forms[subj];
+      const S = subjLabel(subj, ans);
+      const sentence = `${S} ${sents[i]}`.replace(/\s+/g," ").trim();
+      items.push({
+        itemId: `conj:${c.id}:${subj}`,
+        verbId: c.id,
+        infinitive: c.infinitive,
+        meaning: c.meaning,
+        subject: subj,
+        sentence,
+        answer: ans,
+      });
+    }
+  }
+  return items;
 }
 
 /* ===== 队列：全覆盖优先 + box 复习 ===== */
@@ -261,8 +316,8 @@ function rebuildQueue(){
 
   queue = view.slice().sort((a,b)=>{
     const pa = getP(a.itemId), pb = getP(b.itemId);
-    if(pa.seen !== pb.seen) return pa.seen - pb.seen; // 0 优先
-    if(pa.box !== pb.box) return pa.box - pb.box;     // box 小优先
+    if(pa.seen !== pb.seen) return pa.seen - pb.seen;
+    if(pa.box !== pb.box) return pa.box - pb.box;
     return a.itemId.localeCompare(b.itemId);
   });
 
@@ -388,14 +443,13 @@ function render(){
     const user = norm(userRaw);
     const ok = user && user === norm(it.answer);
 
-    // 提交就算做过
     const p0 = getP(it.itemId);
     p0.seen += 1;
     setP(it.itemId, p0);
 
     showBack(!!ok, userRaw);
 
-    // 你要的“第一种”：答对自动 Good 并下一题
+    // 答对：自动 Good + 下一题
     if(ok){
       const p2 = getP(it.itemId);
       p2.box = Math.min(4, p2.box + 1);
