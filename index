@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>法语动词变位 Flashcards（A1 挖空）</title>
+  <style>
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+      margin: 20px;
+      color:#111;
+      line-height:1.45;
+    }
+    .wrap{max-width: 980px; margin: 0 auto;}
+    .top{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      margin-bottom: 14px;
+    }
+    button, input, select{
+      padding:10px 12px;
+      font-size:14px;
+      border:1px solid #d9d9d9;
+      border-radius:10px;
+      background:#fff;
+    }
+    button{cursor:pointer;}
+    button:active{transform: translateY(1px);}
+    .pill{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#f2f2f2;
+      font-size:12px;
+      border:1px solid #e6e6e6;
+    }
+    .card{
+      border:1px solid #ddd;
+      border-radius:16px;
+      padding:18px;
+      min-height: 260px;
+    }
+    .row{display:flex; gap:16px; flex-wrap:wrap;}
+    .col{flex: 1 1 420px;}
+    .big{font-size:22px; font-weight:650; margin:0 0 6px;}
+    .muted{color:#666; font-size:13px;}
+    table{border-collapse:collapse; width:100%; margin-top:10px;}
+    td,th{border:1px solid #e8e8e8; padding:8px 10px; font-size:14px;}
+    th{background:#fafafa; text-align:left;}
+    .qa{
+      margin-top:12px;
+      border-top:1px solid #eee;
+      padding-top:12px;
+    }
+    .qline{font-size:16px; margin:6px 0;}
+    .qline b{font-weight:700;}
+    .qctrl{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px;}
+    .feedback{font-size:13px;}
+    .ok{color:#0a7a2f;}
+    .bad{color:#b00020;}
+    .footer{
+      margin-top: 12px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+    .hint{color:#666; font-size:13px;}
+    details{margin-top:14px;}
+    code{background:#f6f6f6; padding:2px 6px; border-radius:6px;}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button id="prevBtn">上一张</button>
+    <button id="flipBtn">翻面</button>
+    <button id="nextBtn">下一张</button>
+
+    <span class="pill" id="modePill">模式：顺序</span>
+    <button id="shuffleBtn">随机</button>
+
+    <button id="knowBtn">我会了</button>
+    <button id="againBtn">再来一次</button>
+
+    <span class="pill" id="statsPill"></span>
+
+    <input id="searchBox" placeholder="搜索：aimer / 喜欢 / prends ..." style="flex:1 1 260px" />
+    <select id="filterSelect">
+      <option value="all">全部</option>
+      <option value="regular">规则动词</option>
+      <option value="irregular">不规则动词</option>
+      <option value="reflexive">自反动词</option>
+    </select>
+    <button id="resetBtn" title="清空进度（只清本地）">重置进度</button>
+  </div>
+
+  <div class="card" id="card"></div>
+
+  <div class="footer">
+    <span class="hint">快捷键：空格=翻面，←/→=上一张/下一张，Enter=提交答案</span>
+  </div>
+
+  <details>
+    <summary>说明（点开）</summary>
+    <div class="muted" style="margin-top:8px;">
+      这套卡片默认是 <b>présent</b>。每张卡正面显示动词；下面给两条 A1 挖空句，你可以直接在输入框里填答案判对错。翻面后显示变位表与本题答案。<br/>
+      “我会了/再来一次”会影响熟练度与出牌顺序（熟练度低的更容易被抽到）。进度保存在浏览器的 localStorage。
+    </div>
+  </details>
+</div>
+
+<script>
+/* ===== 数据：按你给的表直接写入（présent） ===== */
+const CARDS = [
+  {id:"aimer", infinitive:"aimer", meaning:"喜欢", type:"regular", forms:{je:"aime", tu:"aimes", "il/elle/on":"aime", nous:"aimons", vous:"aimez", "ils/elles":"aiment"}},
+  {id:"parler", infinitive:"parler", meaning:"说话", type:"regular", forms:{je:"parle", tu:"parles", "il/elle/on":"parle", nous:"parlons", vous:"parlez", "ils/elles":"parlent"}},
+  {id:"travailler", infinitive:"travailler", meaning:"工作", type:"regular", forms:{je:"travaille", tu:"travailles", "il/elle/on":"travaille", nous:"travaillons", vous:"travaillez", "ils/elles":"travaillent"}},
+  {id:"profiter", infinitive:"profiter", meaning:"享受", type:"regular", forms:{je:"profite", tu:"profites", "il/elle/on":"profite", nous:"profitons", vous:"profitez", "ils/elles":"profitent"}},
+  {id:"visiter", infinitive:"visiter", meaning:"参观", type:"regular", forms:{je:"visite", tu:"visites", "il/elle/on":"visite", nous:"visitons", vous:"visitez", "ils/elles":"visitent"}},
+  {id:"écouter", infinitive:"écouter", meaning:"听", type:"regular", forms:{je:"écoute", tu:"écoutes", "il/elle/on":"écoute", nous:"écoutons", vous:"écoutez", "ils/elles":"écoutent"}},
+  {id:"inviter", infinitive:"inviter", meaning:"邀请", type:"regular", forms:{je:"invite", tu:"invites", "il/elle/on":"invite", nous:"invitons", vous:"invitez", "ils/elles":"invitent"}},
+  {id:"aider", infinitive:"aider", meaning:"帮助", type:"regular", forms:{je:"aide", tu:"aides", "il/elle/on":"aide", nous:"aidons", vous:"aidez", "ils/elles":"aident"}},
+  {id:"habiter", infinitive:"habiter", meaning:"居住", type:"regular", forms:{je:"habite", tu:"habites", "il/elle/on":"habite", nous:"habitons", vous:"habitez", "ils/elles":"habitent"}},
+  {id:"monter", infinitive:"monter", meaning:"上去", type:"regular", forms:{je:"monte", tu:"montes", "il/elle/on":"monte", nous:"montons", vous:"montez", "ils/elles":"montent"}},
+  {id:"louer", infinitive:"louer", meaning:"租", type:"regular", forms:{je:"loue", tu:"loues", "il/elle/on":"loue", nous:"louons", vous:"louez", "ils/elles":"louent"}},
+  {id:"indiquer", infinitive:"indiquer", meaning:"指出", type:"regular", forms:{je:"indique", tu:"indiques", "il/elle/on":"indique", nous:"indiquons", vous:"indiquez", "ils/elles":"indiquent"}},
+  {id:"téléphoner", infinitive:"téléphoner", meaning:"打电话", type:"regular", forms:{je:"téléphone", tu:"téléphones", "il/elle/on":"téléphone", nous:"téléphonons", vous:"téléphonez", "ils/elles":"téléphonent"}},
+  {id:"voyager", infinitive:"voyager", meaning:"旅行", type:"regular", forms:{je:"voyage", tu:"voyages", "il/elle/on":"voyage", nous:"voyageons", vous:"voyagez", "ils/elles":"voyagent"}},
+  {id:"regarder", infinitive:"regarder", meaning:"看", type:"regular", forms:{je:"regarde", tu:"regardes", "il/elle/on":"regarde", nous:"regardons", vous:"regardez", "ils/elles":"regardent"}},
+  {id:"passer", infinitive:"passer", meaning:"经过", type:"regular", forms:{je:"passe", tu:"passes", "il/elle/on":"passe", nous:"passons", vous:"passez", "ils/elles":"passent"}},
+  {id:"donner", infinitive:"donner", meaning:"给", type:"regular", forms:{je:"donne", tu:"donnes", "il/elle/on":"donne", nous:"donnons", vous:"donnez", "ils/elles":"donnent"}},
+  {id:"redoubler", infinitive:"redoubler", meaning:"重修", type:"regular", forms:{je:"redouble", tu:"redoubles", "il/elle/on":"redouble", nous:"redoublons", vous:"redoublez", "ils/elles":"redoublent"}},
+  {id:"trouver", infinitive:"trouver", meaning:"找到", type:"regular", forms:{je:"trouve", tu:"trouves", "il/elle/on":"trouve", nous:"trouvons", vous:"trouvez", "ils/elles":"trouvent"}},
+  {id:"rencontrer", infinitive:"rencontrer", meaning:"遇见", type:"regular", forms:{je:"rencontre", tu:"rencontres", "il/elle/on":"rencontre", nous:"rencontrons", vous:"rencontrez", "ils/elles":"rencontrent"}},
+  {id:"retourner", infinitive:"retourner", meaning:"返回", type:"regular", forms:{je:"retourne", tu:"retournes", "il/elle/on":"retourne", nous:"retournons", vous:"retournez", "ils/elles":"retournent"}},
+  {id:"laisser", infinitive:"laisser", meaning:"留下", type:"regular", forms:{je:"laisse", tu:"laisses", "il/elle/on":"laisse", nous:"laissons", vous:"laissez", "ils/elles":"laissent"}},
+  {id:"prier", infinitive:"prier", meaning:"祈祷", type:"regular", forms:{je:"prie", tu:"pries", "il/elle/on":"prie", nous:"prions", vous:"priez", "ils/elles":"prient"}},
+  {id:"présenter", infinitive:"présenter", meaning:"介绍", type:"regular", forms:{je:"présente", tu:"présentes", "il/elle/on":"présente", nous:"présentons", vous:"présentez", "ils/elles":"présentent"}},
+  {id:"fumer", infinitive:"fumer", meaning:"抽烟", type:"regular", forms:{je:"fume", tu:"fumes", "il/elle/on":"fume", nous:"fumons", vous:"fumez", "ils/elles":"fument"}},
+  {id:"refuser", infinitive:"refuser", meaning:"拒绝", type:"regular", forms:{je:"refuse", tu:"refuses", "il/elle/on":"refuse", nous:"refusons", vous:"refusez", "ils/elles":"refusent"}},
+  {id:"accepter", infinitive:"accepter", meaning:"接受", type:"regular", forms:{je:"accepte", tu:"acceptes", "il/elle/on":"accepte", nous:"acceptons", vous:"acceptez", "ils/elles":"acceptent"}},
+  {id:"offrir", infinitive:"offrir", meaning:"提供", type:"irregular", forms:{je:"offre", tu:"offres", "il/elle/on":"offre", nous:"offrons", vous:"offrez", "ils/elles":"offrent"}},
+
+  {id:"s_adresser", infinitive:"s’adresser", meaning:"致使/求助", type:"reflexive", forms:{je:"m’adresse", tu:"t’adresses", "il/elle/on":"s’adresse", nous:"nous adressons", vous:"vous adressez", "ils/elles":"s’adressent"}},
+  {id:"se_lever", infinitive:"se lever", meaning:"起床", type:"reflexive", forms:{je:"me lève", tu:"te lèves", "il/elle/on":"se lève", nous:"nous levons", vous:"vous levez", "ils/elles":"se lèvent"}},
+  {id:"se_coucher", infinitive:"se coucher", meaning:"睡觉", type:"reflexive", forms:{je:"me couche", tu:"te couches", "il/elle/on":"se couche", nous:"nous couchons", vous:"vous couchez", "ils/elles":"se couchent"}},
+
+  {id:"prendre", infinitive:"prendre", meaning:"拿", type:"irregular", forms:{je:"prends", tu:"prends", "il/elle/on":"prend", nous:"prenons", vous:"prenez", "ils/elles":"prennent"}},
+  {id:"apprendre", infinitive:"apprendre", meaning:"学习", type:"irregular", forms:{je:"apprends", tu:"apprends", "il/elle/on":"apprend", nous:"apprenons", vous:"apprenez", "ils/elles":"apprennent"}},
+  {id:"comprendre", infinitive:"comprendre", meaning:"理解", type:"irregular", forms:{je:"comprends", tu:"comprends", "il/elle/on":"comprend", nous:"comprenons", vous:"comprenez", "ils/elles":"comprennent"}},
+
+  {id:"venir", infinitive:"venir", meaning:"来", type:"irregular", forms:{je:"viens", tu:"viens", "il/elle/on":"vient", nous:"venons", vous:"venez", "ils/elles":"viennent"}},
+  {id:"devenir", infinitive:"devenir", meaning:"成为", type:"irregular", forms:{je:"deviens", tu:"deviens", "il/elle/on":"devient", nous:"devenons", vous:"devenez", "ils/elles":"deviennent"}},
+
+  {id:"aller", infinitive:"aller", meaning:"去", type:"irregular", forms:{je:"vais", tu:"vas", "il/elle/on":"va", nous:"allons", vous:"allez", "ils/elles":"vont"}},
+  {id:"faire", infinitive:"faire", meaning:"做", type:"irregular", forms:{je:"fais", tu:"fais", "il/elle/on":"fait", nous:"faisons", vous:"faites", "ils/elles":"font"}},
+  {id:"vouloir", infinitive:"vouloir", meaning:"想要", type:"irregular", forms:{je:"veux", tu:"veux", "il/elle/on":"veut", nous:"voulons", vous:"voulez", "ils/elles":"veulent"}},
+  {id:"pouvoir", infinitive:"pouvoir", meaning:"能够", type:"irregular", forms:{je:"peux", tu:"peux", "il/elle/on":"peut", nous:"pouvons", vous:"pouvez", "ils/elles":"peuvent"}},
+  {id:"savoir", infinitive:"savoir", meaning:"知道", type:"irregular", forms:{je:"sais", tu:"sais", "il/elle/on":"sait", nous:"savons", vous:"savez", "ils/elles":"savent"}},
+  {id:"connaître", infinitive:"connaître", meaning:"认识", type:"irregular", forms:{je:"connais", tu:"connais", "il/elle/on":"connaît", nous:"connaissons", vous:"connaissez", "ils/elles":"connaissent"}},
+  {id:"voir", infinitive:"voir", meaning:"看见", type:"irregular", forms:{je:"vois", tu:"vois", "il/elle/on":"voit", nous:"voyons", vous:"voyez", "ils/elles":"voient"}},
+  {id:"recevoir", infinitive:"recevoir", meaning:"收到", type:"irregular", forms:{je:"reçois", tu:"reçois", "il/elle/on":"reçoit", nous:"recevons", vous:"recevez", "ils/elles":"reçoivent"}},
+
+  {id:"lire", infinitive:"lire", meaning:"读", type:"irregular", forms:{je:"lis", tu:"lis", "il/elle/on":"lit", nous:"lisons", vous:"lisez", "ils/elles":"lisent"}},
+  {id:"écrire", infinitive:"écrire", meaning:"写", type:"irregular", forms:{je:"écris", tu:"écris", "il/elle/on":"écrit", nous:"écrivons", vous:"écrivez", "ils/elles":"écrivent"}},
+
+  {id:"suivre", infinitive:"suivre", meaning:"跟随", type:"irregular", forms:{je:"suis", tu:"suis", "il/elle/on":"suit", nous:"suivons", vous:"suivez", "ils/elles":"suivent"}},
+  {id:"poursuivre", infinitive:"poursuivre", meaning:"继续", type:"irregular", forms:{je:"poursuis", tu:"poursuis", "il/elle/on":"poursuit", nous:"poursuivons", vous:"poursuivez", "ils/elles":"poursuivent"}},
+
+  {id:"partir", infinitive:"partir", meaning:"离开", type:"irregular", forms:{je:"pars", tu:"pars", "il/elle/on":"part", nous:"partons", vous:"partez", "ils/elles":"partent"}},
+  {id:"sortir", infinitive:"sortir", meaning:"出去", type:"irregular", forms:{je:"sors", tu:"sors", "il/elle/on":"sort", nous:"sortons", vous:"sortez", "ils/elles":"sortent"}},
+  {id:"réussir", infinitive:"réussir", meaning:"成功", type:"regular", forms:{je:"réussis", tu:"réussis", "il/elle/on":"réussit", nous:"réussissons", vous:"réussissez", "ils/elles":"réussissent"}},
+];
+
+/* ===== A1 例句模板（尽量简单） ===== */
+const EX_TEMPLATES = {
+  "aimer":      [{s:"je",  t:"__ le chocolat."}, {s:"nous", t:"__ la musique."}],
+  "parler":     [{s:"je",  t:"__ français."}, {s:"vous", t:"__ anglais."}],
+  "travailler": [{s:"je",  t:"__ ici."}, {s:"ils/elles", t:"__ aujourd’hui."}],
+  "profiter":   [{s:"je",  t:"__ du week-end."}, {s:"nous", t:"__ des vacances."}],
+  "visiter":    [{s:"je",  t:"__ Paris."}, {s:"nous", t:"__ un musée."}],
+  "écouter":    [{s:"je",  t:"__ la radio."}, {s:"vous", t:"__ une chanson."}],
+  "inviter":    [{s:"je",  t:"__ mon ami."}, {s:"nous", t:"__ nos voisins."}],
+  "aider":      [{s:"je",  t:"__ ma sœur."}, {s:"vous", t:"__ vos amis."}],
+  "habiter":    [{s:"je",  t:"__ à Shanghai."}, {s:"ils/elles", t:"__ en France."}],
+  "monter":     [{s:"je",  t:"__ les escaliers."}, {s:"nous", t:"__ dans le bus."}],
+  "louer":      [{s:"je",  t:"__ un appartement."}, {s:"nous", t:"__ une voiture."}],
+  "indiquer":   [{s:"vous", t:"__ le chemin."}, {s:"il/elle/on", t:"__ la rue."}],
+  "téléphoner": [{s:"je",  t:"__ à ma mère."}, {s:"vous", t:"__ à votre ami."}],
+  "voyager":    [{s:"je",  t:"__ en train."}, {s:"nous", t:"__ en Europe."}],
+  "regarder":   [{s:"je",  t:"__ un film."}, {s:"ils/elles", t:"__ la télé."}],
+  "passer":     [{s:"je",  t:"__ par ici."}, {s:"nous", t:"__ à la maison."}],
+  "donner":     [{s:"je",  t:"__ un livre à Paul."}, {s:"vous", t:"__ un cadeau."}],
+  "redoubler":  [{s:"je",  t:"__ une année."}, {s:"il/elle/on", t:"__ cette classe."}],
+  "trouver":    [{s:"je",  t:"__ la clé."}, {s:"nous", t:"__ une solution."}],
+  "rencontrer": [{s:"je",  t:"__ Marie."}, {s:"nous", t:"__ le professeur."}],
+  "retourner":  [{s:"je",  t:"__ à la maison."}, {s:"vous", t:"__ au travail."}],
+  "laisser":    [{s:"je",  t:"__ mon sac ici."}, {s:"nous", t:"__ un message."}],
+  "prier":      [{s:"je",  t:"__ en silence."}, {s:"ils/elles", t:"__ à l’église."}],
+  "présenter":  [{s:"je",  t:"__ mon ami."}, {s:"nous", t:"__ la classe."}],
+  "fumer":      [{s:"je",  t:"__ rarement."}, {s:"il/elle/on", t:"__ ici."}],
+  "refuser":    [{s:"je",  t:"__ ce café."}, {s:"ils/elles", t:"__ l’offre."}],
+  "accepter":   [{s:"je",  t:"__ la proposition."}, {s:"vous", t:"__ cette idée."}],
+  "offrir":     [{s:"je",  t:"__ un cadeau."}, {s:"nous", t:"__ notre aide."}],
+
+  "s’adresser": [{s:"je",  t:"__ à la professeure."}, {s:"vous", t:"__ au médecin."}],
+  "se lever":   [{s:"je",  t:"__ à 7 heures."}, {s:"ils/elles", t:"__ tôt."}],
+  "se coucher": [{s:"je",  t:"__ tard."}, {s:"nous", t:"__ à 22 heures."}],
+
+  "prendre":    [{s:"je",  t:"__ un café."}, {s:"vous", t:"__ le métro."}],
+  "apprendre":  [{s:"je",  t:"__ le français."}, {s:"nous", t:"__ une leçon."}],
+  "comprendre": [{s:"je",  t:"__ la question."}, {s:"vous", t:"__ bien."}],
+
+  "venir":      [{s:"je",  t:"__ ici."}, {s:"ils/elles", t:"__ demain."}],
+  "devenir":    [{s:"je",  t:"__ professeur."}, {s:"il/elle/on", t:"__ adulte."}],
+  "aller":      [{s:"je",  t:"__ à l’école."}, {s:"nous", t:"__ au cinéma."}],
+  "faire":      [{s:"je",  t:"__ du sport."}, {s:"vous", t:"__ la cuisine."}],
+  "vouloir":    [{s:"je",  t:"__ un thé."}, {s:"vous", t:"__ venir ?"}],
+  "pouvoir":    [{s:"je",  t:"__ venir."}, {s:"vous", t:"__ m’aider ?"}],
+  "savoir":     [{s:"je",  t:"__ la réponse."}, {s:"vous", t:"__ où c’est ?"}],
+  "connaître":  [{s:"je",  t:"__ cette ville."}, {s:"vous", t:"__ Marie ?"}],
+  "voir":       [{s:"je",  t:"__ la tour."}, {s:"nous", t:"__ un chien."}],
+  "recevoir":   [{s:"je",  t:"__ une lettre."}, {s:"nous", t:"__ un message."}],
+  "lire":       [{s:"je",  t:"__ un livre."}, {s:"vous", t:"__ le journal."}],
+  "écrire":     [{s:"je",  t:"__ une carte."}, {s:"nous", t:"__ un e-mail."}],
+  "suivre":     [{s:"je",  t:"__ le cours."}, {s:"nous", t:"__ le guide."}],
+  "poursuivre": [{s:"je",  t:"__ mes études."}, {s:"nous", t:"__ la discussion."}],
+  "partir":     [{s:"je",  t:"__ à 8 heures."}, {s:"ils/elles", t:"__ ce soir."}],
+  "sortir":     [{s:"je",  t:"__ avec des amis."}, {s:"nous", t:"__ maintenant."}],
+  "réussir":    [{s:"je",  t:"__ l’examen."}, {s:"vous", t:"__ facilement."}],
+};
+
+const LS_KEY = "fr_verbs_flashcards_v2_progress";
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveProgress(p){ localStorage.setItem(LS_KEY, JSON.stringify(p)); }
+
+let progress = loadProgress(); // { [id]: {score:number, seen:number} }
+
+function scoreOf(id){ return progress[id]?.score ?? 0; }
+function bump(id, delta){
+  const cur = progress[id] || {score:0, seen:0};
+  cur.score = Math.max(-3, Math.min(10, cur.score + delta));
+  cur.seen += 1;
+  progress[id] = cur;
+  saveProgress(progress);
+}
+
+function isVowelSound(s){
+  // 简化：元音/哑音h开头 -> 需要 j'
+  return /^[aeiouyàâäéèêëïîôöùûüœh]/i.test(s.trim());
+}
+
+function subjectText(subjKey){
+  // 用在句子开头：Je / J' / Tu / Il / Elle / On / Nous / Vous / Ils / Elles
+  if(subjKey === "je") return "Je";
+  if(subjKey === "tu") return "Tu";
+  if(subjKey === "nous") return "Nous";
+  if(subjKey === "vous") return "Vous";
+  if(subjKey === "il/elle/on") return "Il";
+  if(subjKey === "ils/elles") return "Ils";
+  return "Je";
+}
+
+function normalizeInfinitive(inf){
+  return (inf || "").replace(/\s+/g," ").trim();
+}
+
+function templateKeyForCard(card){
+  // 用 infinitive 精确匹配；自反动词用规范写法
+  const inf = normalizeInfinitive(card.infinitive);
+  if(inf === "s’adresser") return "s’adresser";
+  if(inf === "se lever") return "se lever";
+  if(inf === "se coucher") return "se coucher";
+  return inf;
+}
+
+function buildExamples(card){
+  const key = templateKeyForCard(card);
+  const ex = EX_TEMPLATES[key] || [
+    {s:"je", t:"__ aujourd’hui."},
+    {s:"nous", t:"__ maintenant."}
+  ];
+  return ex.slice(0,2).map(one => {
+    const subj = one.s;
+    const ans = card.forms[subj] || "";
+    let S = subjectText(subj);
+
+    // 处理 Je -> J' 的省音（当答案以元音/哑音h开头）
+    if(subj === "je" && isVowelSound(ans)) S = "J’";
+
+    // 处理 je 的答案一般不带主语，所以直接替换 "__"
+    const sentence = `${S} ${one.t}`.replace("__", "____").replace(/\s+/g, " ").trim();
+    return { sentence, answer: ans };
+  });
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function escapeHtml(s){
+  return (s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#39;");
+}
+
+let flipped = false;
+let shuffled = false;
+let idx = 0;
+
+const $card = document.getElementById("card");
+const $modePill = document.getElementById("modePill");
+const $statsPill = document.getElementById("statsPill");
+const $searchBox = document.getElementById("searchBox");
+const $filterSelect = document.getElementById("filterSelect");
+
+let viewCards = CARDS.slice();     // 经过筛选搜索后的卡片
+let order = viewCards.map(c=>c.id); // 当前顺序（id列表）
+
+function applySearchAndFilter(){
+  const q = ($searchBox.value || "").trim().toLowerCase();
+  const f = $filterSelect.value;
+
+  viewCards = CARDS.filter(c => {
+    if(f === "regular" && c.type !== "regular") return false;
+    if(f === "irregular" && c.type !== "irregular") return false;
+    if(f === "reflexive" && c.type !== "reflexive") return false;
+
+    if(!q) return true;
+
+    const hit = [
+      c.infinitive, c.meaning, c.type,
+      ...Object.values(c.forms)
+    ].join(" ").toLowerCase();
+
+    return hit.includes(q);
+  });
+
+  // 默认“复习优先”：熟练度低的靠前
+  order = viewCards.map(c=>c.id).sort((a,b)=>{
+    const sa = scoreOf(a), sb = scoreOf(b);
+    if(sa !== sb) return sa - sb;
+    return a.localeCompare(b);
+  });
+
+  if(shuffled) order = shuffle(order);
+
+  idx = 0;
+  flipped = false;
+  render();
+}
+
+function currentCard(){
+  const id = order[idx];
+  return viewCards.find(c=>c.id === id);
+}
+
+function render(){
+  const c = currentCard();
+  const total = order.length;
+  if(!c || total === 0){
+    $card.innerHTML = `<div class="muted">没有匹配到卡片。换个搜索词或筛选条件。</div>`;
+    $statsPill.textContent = `0 / 0`;
+    return;
+  }
+
+  const pos = idx + 1;
+  const sc = scoreOf(c.id);
+  const examples = buildExamples(c);
+
+  $statsPill.textContent = `${pos} / ${total} ｜ 熟练度：${sc}`;
+
+  if(!flipped){
+    $card.innerHTML = `
+      <div class="row">
+        <div class="col">
+          <p class="big">${escapeHtml(c.infinitive)}（${escapeHtml(c.meaning)}）</p>
+          <div class="muted">时态：présent ｜ 类型：${c.type === "regular" ? "规则" : (c.type === "reflexive" ? "自反" : "不规则")}</div>
+
+          <div class="qa">
+            <div class="muted">A1 挖空（直接做题）：</div>
+            <div class="qline">1）${escapeHtml(examples[0].sentence)}</div>
+            <div class="qline">2）${escapeHtml(examples[1].sentence)}</div>
+
+            <div class="qctrl">
+              <input id="ansInput" placeholder="输入答案（比如: vais / me lève / s’adresse）" style="flex:1 1 320px" />
+              <button id="checkBtn">提交</button>
+              <button id="revealBtn">显示答案</button>
+              <span class="feedback" id="feedback"></span>
+            </div>
+            <div class="muted">提示：答案只需要填动词形式，不用填主语。</div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="muted">翻面后显示变位表与本题答案。</div>
+        </div>
+      </div>
+    `;
+
+    // 绑定判题
+    const ansInput = document.getElementById("ansInput");
+    const checkBtn = document.getElementById("checkBtn");
+    const revealBtn = document.getElementById("revealBtn");
+    const feedback = document.getElementById("feedback");
+
+    function normalizeAns(s){
+      return (s||"").trim().replace(/\s+/g," ").replaceAll("’","'").toLowerCase();
+    }
+    const answers = examples.map(e => normalizeAns(e.answer));
+
+    function check(){
+      const user = normalizeAns(ansInput.value);
+      if(!user){
+        feedback.textContent = "先输入答案。";
+        feedback.className = "feedback bad";
+        return;
+      }
+      if(answers.includes(user)){
+        feedback.textContent = "对。";
+        feedback.className = "feedback ok";
+        bump(c.id, +1);
+        $statsPill.textContent = `${pos} / ${total} ｜ 熟练度：${scoreOf(c.id)}`;
+      }else{
+        feedback.textContent = "不对。";
+        feedback.className = "feedback bad";
+        bump(c.id, -1);
+        $statsPill.textContent = `${pos} / ${total} ｜ 熟练度：${scoreOf(c.id)}`;
+      }
+    }
+
+    checkBtn.addEventListener("click", check);
+    ansInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") check(); });
+
+    revealBtn.addEventListener("click", ()=>{
+      feedback.textContent = `答案：1）${examples[0].answer} ｜ 2）${examples[1].answer}`;
+      feedback.className = "feedback";
+    });
+
+  } else {
+    const forms = c.forms;
+    const examples = buildExamples(c);
+
+    $card.innerHTML = `
+      <div class="row">
+        <div class="col">
+          <p class="big">${escapeHtml(c.infinitive)}（${escapeHtml(c.meaning)}）</p>
+          <div class="muted">présent</div>
+
+          <table>
+            <tr><th>人称</th><th>变位</th></tr>
+            <tr><td>je</td><td>${escapeHtml(forms["je"] || "")}</td></tr>
+            <tr><td>tu</td><td>${escapeHtml(forms["tu"] || "")}</td></tr>
+            <tr><td>il/elle/on</td><td>${escapeHtml(forms["il/elle/on"] || "")}</td></tr>
+            <tr><td>nous</td><td>${escapeHtml(forms["nous"] || "")}</td></tr>
+            <tr><td>vous</td><td>${escapeHtml(forms["vous"] || "")}</td></tr>
+            <tr><td>ils/elles</td><td>${escapeHtml(forms["ils/elles"] || "")}</td></tr>
+          </table>
+        </div>
+
+        <div class="col">
+          <div class="muted">A1 挖空答案：</div>
+          <div class="qa">
+            <div class="qline">1）${escapeHtml(examples[0].sentence.replace("____", `<b>${examples[0].answer}</b>`))}</div>
+            <div class="qline">2）${escapeHtml(examples[1].sentence.replace("____", `<b>${examples[1].answer}</b>`))}</div>
+            <div class="muted" style="margin-top:10px;">也可以直接用“我会了/再来一次”控制复习频率。</div>
+          </div>
+        </div>
+      </div>
+    `.replaceAll("&lt;b&gt;","<b>").replaceAll("&lt;/b&gt;","</b>");
+  }
+}
+
+function next(){
+  if(order.length === 0) return;
+  idx = (idx + 1) % order.length;
+  flipped = false;
+  render();
+}
+function prev(){
+  if(order.length === 0) return;
+  idx = (idx - 1 + order.length) % order.length;
+  flipped = false;
+  render();
+}
+function flip(){
+  if(order.length === 0) return;
+  flipped = !flipped;
+  render();
+}
+
+document.getElementById("nextBtn").addEventListener("click", next);
+document.getElementById("prevBtn").addEventListener("click", prev);
+document.getElementById("flipBtn").addEventListener("click", flip);
+
+document.getElementById("shuffleBtn").addEventListener("click", ()=>{
+  shuffled = !shuffled;
+  $modePill.textContent = shuffled ? "模式：随机" : "模式：顺序";
+  applySearchAndFilter();
+});
+
+document.getElementById("knowBtn").addEventListener("click", ()=>{
+  const c = currentCard();
+  if(!c) return;
+  bump(c.id, +2);
+  next();
+});
+
+document.getElementById("againBtn").addEventListener("click", ()=>{
+  const c = currentCard();
+  if(!c) return;
+  bump(c.id, -2);
+  next();
+});
+
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  localStorage.removeItem(LS_KEY);
+  progress = {};
+  applySearchAndFilter();
+});
+
+$searchBox.addEventListener("input", ()=>{
+  // 小延迟防抖
+  clearTimeout(window.__t);
+  window.__t = setTimeout(applySearchAndFilter, 120);
+});
+$filterSelect.addEventListener("change", applySearchAndFilter);
+
+document.addEventListener("keydown", (e)=>{
+  if(e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+  if(e.key === "ArrowRight") next();
+  if(e.key === "ArrowLeft") prev();
+  if(e.key === " ") { e.preventDefault(); flip(); }
+});
+
+applySearchAndFilter();
+</script>
+</body>
+</html>
